@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import styled from "styled-components";
-import AddAssignment from "./AddAssignment";  // Make sure the path is correct
+
 
 // Styled container for the main content
 const Container = styled.div`
   padding: 2rem;
   background-color:rgb(192, 236, 213);
+  padding-bottom: 160px;
 `;
 
 // Styled heading for the dashboard title
@@ -54,7 +55,7 @@ const Details = styled.p`
 
 // Styled button for interaction or additional details
 const Button = styled.button`
-  background-color: rgb(47, 72, 59);
+  background-color: rgb(219, 46, 46);
   color: white;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
@@ -154,70 +155,139 @@ const Dashboard = () => {
       });
   };
 
-  
+  const handleStatusChange = (assignmentId, newStatus, title) => {
+    const currentAssignment = assignments.find((a) => a.id === assignmentId);
+    if (!currentAssignment) return;
+
+    axios
+      .put(`http://localhost:8080/api/assignments/${title}`, {
+        ...assignment,
+        title: title,
+        subject: currentAssignment.subject,
+        deadline: currentAssignment.deadline,
+        status: newStatus,
+      })
+      .then(() => {
+        setAssignments((prevAssignments) =>
+          prevAssignments.map((a) =>
+            a.id === assignmentId ? { ...a, status: newStatus } : a
+          )
+        );
+      })
+      .catch((err) => {
+        console.error("Status update failed:", err);
+        alert("Failed to update status.");
+      });
+  };
+
+  const handleDelete = (id) => {
+  if (!window.confirm("Are you sure you want to delete this assignment?")) return;
+
+  axios.delete(`http://localhost:8080/api/assignments/${id}`)
+    .then(() => {
+      alert("Assignment deleted!");
+      // Remove the deleted assignment from state to update UI instantly
+      setAssignments(prev => prev.filter(a => a.id !== id));
+    })
+    .catch((error) => {
+      console.error("Delete error:", error);
+      alert("Failed to delete assignment.");
+    });
+};
+
+
+
+
 
 
   return (
     <Container>
       <Heading>Assignment Hub</Heading>
-      
-      
+
+
 
       {assignments.length === 0 ? (
         <p>No assignments available</p>
       ) : (
         <div className="grid gap-4">
-          {assignments.map((assignment) => (
-            <AssignmentCard
-              key={assignment.id}
-              statusColor={statusColors[assignment.status]}
-            >
-              <Title>{assignment.title}</Title>
-              <Details><strong>Subject:</strong> {assignment.subject}</Details>
-              <Details><strong>Deadline:</strong> {dayjs(assignment.deadline).format("DD MMM YYYY")}</Details>
-              <Details><strong>Current Status:</strong> {assignment.status}</Details>
-              <Button>View Details</Button>
-            </AssignmentCard>
-          ))}
+          {[...assignments]
+            .sort((a, b) => {
+              // Push Completed to the bottom
+              if (a.status === "Completed" && b.status !== "Completed") return 1;
+              if (a.status !== "Completed" && b.status === "Completed") return -1;
+
+              // Sort by nearest deadline
+              return new Date(a.deadline) - new Date(b.deadline);
+            })
+            .map((assignment) => (
+              <AssignmentCard
+                key={assignment.id}
+                statusColor={statusColors[assignment.status]}
+              >
+                <Title>{assignment.title}</Title>
+                <Details><strong>Subject:</strong> {assignment.subject}</Details>
+                <Details>
+                  <strong>Deadline:</strong>{" "}
+                  {dayjs(assignment.deadline).format("DD MMM YYYY")}
+                </Details>
+                <Details>
+                  <strong>Current Status:</strong>{" "}
+                  <select
+                    value={assignment.status}
+                    onChange={(e) =>
+                      handleStatusChange(assignment.id, e.target.value, assignment.title)
+                    }
+                  >
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </Details>
+
+                <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
+
+              </AssignmentCard>
+            ))}
         </div>
+
       )}
 
       <InlineForm onSubmit={handleSubmit}>
-  <InlineInput
-    type="text"
-    name="title"
-    placeholder="Title"
-    value={assignment.title}
-    onChange={handleChange}
-    required
-  />
+        <InlineInput
+          type="text"
+          name="title"
+          placeholder="Title"
+          value={assignment.title}
+          onChange={handleChange}
+          required
+        />
 
-  <InlineInput
-  type="text"
-  name="subject"
-  placeholder="Subject"      // ✅ New field
-  value={assignment.subject}
-  onChange={handleChange}
-  required
-/>
-  <InlineInput
-    type="date"
-    name="deadline"
-    value={assignment.deadline}
-    onChange={handleChange}
-    required
-  />
-  <InlineSelect
-    name="status"
-    value={assignment.status}
-    onChange={handleChange}
-  >
-    <option value="Not Started">Not Started</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Completed">Completed</option>
-  </InlineSelect>
-  <InlineButton type="submit">Add</InlineButton>
-</InlineForm>
+        <InlineInput
+          type="text"
+          name="subject"
+          placeholder="Subject"      // ✅ New field
+          value={assignment.subject}
+          onChange={handleChange}
+          required
+        />
+        <InlineInput
+          type="date"
+          name="deadline"
+          value={assignment.deadline}
+          onChange={handleChange}
+          required
+        />
+        <InlineSelect
+          name="status"
+          value={assignment.status}
+          onChange={handleChange}
+        >
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </InlineSelect>
+        <InlineButton type="submit">Add</InlineButton>
+      </InlineForm>
 
     </Container>
   );
