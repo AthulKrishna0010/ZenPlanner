@@ -10,12 +10,14 @@ const HeaderContainer = styled.header`
   justify-content: space-between; /* Space between logo and navigation */
   align-items: center; /* Aligns items vertically in the center */
   border-bottom: 1px solid #e0e0e0; /* Subtle border at the bottom */
+  
 `;
 
 // Wrapper for the logo section
 const Logo = styled.div`
   display: flex; /* Displays logo image and text side by side */
   align-items: center; /* Vertically centers logo image and text */
+  
 `;
 
 // Styling for the logo image
@@ -61,7 +63,21 @@ const Nav = styled.nav`
 `;
 
 // Functional component for the header
-function Header() {
+function Header({isAuthPage}) {
+  if(isAuthPage){
+    return (
+    <HeaderContainer style={{ justifyContent: 'center' }}>
+      {/* Logo section with image and text */}
+      <Logo>
+      
+        <LogoImage src={logo} alt="ZenPlanner Logo" />    
+        <LogoText>ZenPlanner</LogoText>
+      </Logo>
+      
+      
+    </HeaderContainer>
+  );
+  }
   return (
     <HeaderContainer>
       {/* Logo section with image and text */}
@@ -74,7 +90,7 @@ function Header() {
       <Nav>
         <ul>
           <li><a href="/">Home</a></li> {/* Link to Home page */}
-          <li><a href="/add">Add Tasks</a></li> {/* Link to Add Assignment page */}
+          <li><a href="/add">Manage</a></li> {/* Link to Add Assignment page */}
           <li><a href="/calendar">Calendar</a></li> {/* Link to Calendar page */}
         </ul>
       </Nav>

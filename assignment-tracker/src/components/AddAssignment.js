@@ -5,7 +5,7 @@ import styled from "styled-components";
 // Wrapper
 const PageWrapper = styled.div`
   min-height: 100vh;
-  width: 100%;
+  width: auto;
   background-color: rgb(192, 236, 213);
   display: flex;
   flex-direction: column;
@@ -325,12 +325,3 @@ const handleDelete = () => {
 };
 
 export default AddAssignment;
-
-
-
-
-
-
-
-
-

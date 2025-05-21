@@ -2,60 +2,113 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import dayjs from "dayjs";
+import styled from "styled-components";
+import './calendarStyles.css';
+
+
+// Styled wrapper container
+const Container = styled.div`
+  padding: 2rem;
+  background-color: rgb(192, 236, 213);
+  min-height: 100vh;
+`;
+
+// Heading for the calendar
+const Heading = styled.h1`
+  font-size: 2rem;
+  font-weight: bold;
+  color: rgb(47, 72, 59);
+  margin-bottom: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+`;
+
+// Section heading
+const SubHeading = styled.h2`
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+`;
+
+// Assignment item
+const AssignmentItem = styled.li`
+  font-size: 1rem;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+`;
+
+// Card-like wrapper for assignments list
+const AssignmentBox = styled.ul`
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style-type: disc;
+  margin-left: 1rem;
+`;
 
 const CalendarView = () => {
   const [value, setValue] = useState(new Date());
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    // Later replace this with backend API call
-    const dummyAssignments = [
-      {
-        id: 1,
-        title: "DBMS Project Report",
-        deadline: "2025-05-10",
-      },
-      {
-        id: 2,
-        title: "OS Assignment 3",
-        deadline: "2025-04-28",
-      },
-      {
-        id: 3,
-        title: "Java Mini Project",
-        deadline: "2025-05-10",
-      },
-    ];
-    setAssignments(dummyAssignments);
-  }, []);
+  const fetchAssignments = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/assignments"); // update port if needed
+      const data = await response.json();
+      setAssignments(data);
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
 
-  const getAssignmentsForDate = (date) => {
-    const formatted = dayjs(date).format("YYYY-MM-DD");
-    return assignments.filter(
-      (assignment) => assignment.deadline === formatted
-    );
+  fetchAssignments();
+}, []);
+
+  const getUpcomingAssignments = (selectedDate) => {
+    const selected = dayjs(selectedDate);
+   return assignments
+  .filter((a) =>
+    dayjs(a.deadline).isSame(selected, "day") ||
+    dayjs(a.deadline).isAfter(selected)
+  )
+  .sort((a, b) => dayjs(a.deadline).diff(dayjs(b.deadline)));
+
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Assignment Calendar</h1>
-      <Calendar onChange={setValue} value={value} />
-      
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">
-          Assignments on {dayjs(value).format("DD MMM YYYY")}:
-        </h2>
-        <ul className="mt-2 list-disc ml-5">
-          {getAssignmentsForDate(value).length === 0 ? (
-            <li>No assignments</li>
-          ) : (
-            getAssignmentsForDate(value).map((assignment) => (
-              <li key={assignment.id}>{assignment.title}</li>
-            ))
-          )}
-        </ul>
-      </div>
-    </div>
+    <Container>
+      <Heading>Assignment Calendar</Heading>
+
+      <Calendar
+  onChange={setValue}
+  value={value}
+  tileClassName={({ date, view }) => {
+    const formatted = dayjs(date).format("YYYY-MM-DD");
+    return assignments.some(a => a.deadline === formatted) ? "highlight" : null;
+  }}
+/>
+
+
+      <SubHeading>
+        Assignments due on or after {dayjs(value).format("DD MMM YYYY")}:
+      </SubHeading>
+
+      <AssignmentBox>
+        {getUpcomingAssignments(value).length === 0 ? (
+          <AssignmentItem>No assignments</AssignmentItem>
+        ) : (
+          getUpcomingAssignments(value).map((assignment) => (
+            <AssignmentItem key={assignment.id}>
+              📌 {assignment.title} — <strong>{dayjs(assignment.deadline).format("DD MMM YYYY")}</strong>
+            </AssignmentItem>
+          ))
+        )}
+      </AssignmentBox>
+    </Container>
   );
 };
 
