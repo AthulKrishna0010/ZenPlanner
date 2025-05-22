@@ -17,4 +17,7 @@ public class Assignment {
     private String description;
     private LocalDate deadline;
     private String status;
+    private String fileName; // just the file name, not full path
+
 }
+

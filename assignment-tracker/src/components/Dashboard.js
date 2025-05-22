@@ -105,7 +105,6 @@ const statusColors = {
   "Not Started": "red",
 };
 
-// Main Component
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const [assignment, setAssignment] = useState({
@@ -115,11 +114,24 @@ const Dashboard = () => {
     status: "Not Started",
   });
   const [subjectFilter, setSubjectFilter] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState({});
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/assignments")
-      .then((response) => setAssignments(response.data))
+      .then((response) => {
+        setAssignments(response.data);
+        response.data.forEach((assignment) => {
+          axios
+            .get(`http://localhost:8080/files/${assignment.id}`)
+            .then((res) =>
+              setUploadedFiles((prev) => ({
+                ...prev,
+                [assignment.id]: res.data,
+              }))
+            );
+        });
+      })
       .catch((error) => console.error("Error fetching data", error));
   }, []);
 
@@ -182,6 +194,11 @@ const Dashboard = () => {
       .then(() => {
         alert("Assignment deleted!");
         setAssignments((prev) => prev.filter((a) => a.id !== id));
+        setUploadedFiles((prev) => {
+          const updated = { ...prev };
+          delete updated[id];
+          return updated;
+        });
       })
       .catch((error) => {
         console.error("Delete error:", error);
@@ -189,10 +206,30 @@ const Dashboard = () => {
       });
   };
 
-  // Subjects for dropdown (deduplicated)
-  const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
+  const handleFileUpload = (assignmentId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  // Filtered assignments based on subject
+    axios
+      .post(`http://localhost:8080/upload/${assignmentId}`, formData)
+      .then(() => {
+        alert("File uploaded!");
+        axios
+          .get(`http://localhost:8080/files/${assignmentId}`)
+          .then((res) =>
+            setUploadedFiles((prev) => ({
+              ...prev,
+              [assignmentId]: res.data,
+            }))
+          );
+      })
+      .catch((err) => {
+        console.error("Upload error:", err);
+        alert("File upload failed");
+      });
+  };
+
+  const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
   const filteredAssignments = subjectFilter
     ? assignments.filter((a) => a.subject === subjectFilter)
     : assignments;
@@ -254,6 +291,37 @@ const Dashboard = () => {
                     <option value="Completed">Completed</option>
                   </select>
                 </Details>
+
+                {/* File Upload */}
+                <div style={{ marginTop: "1rem" }}>
+                  <strong>Upload File:</strong>{" "}
+                  <input
+                    type="file"
+                    onChange={(e) =>
+                      handleFileUpload(assignment.id, e.target.files[0])
+                    }
+                  />
+                </div>
+
+                {/* File List */}
+                {uploadedFiles[assignment.id]?.length > 0 && (
+                  <div style={{ marginTop: "1rem" }}>
+                    <strong>Uploaded Files:</strong>
+                    <ul>
+                      {uploadedFiles[assignment.id].map((file, idx) => (
+                        <li key={idx}>
+                          <a
+                            href={`http://localhost:8080/download/${file}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {file}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
               </AssignmentCard>
