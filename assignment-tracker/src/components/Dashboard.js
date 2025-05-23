@@ -20,14 +20,18 @@ const Heading = styled.h1`
   letter-spacing: 1px;
 `;
 
+const Grid = styled.div`
+  display: grid;
+  gap: 1.5rem;
+`;
+
 const AssignmentCard = styled.div`
   background-color: #fff;
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 35px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-bottom: ${(props) => `8px solid ${props.statusColor}`};
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-10px);
@@ -48,6 +52,14 @@ const Details = styled.p`
   margin-bottom: 0.5rem;
 `;
 
+const StyledSelect = styled.select`
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+`;
+
 const Button = styled.button`
   background-color: rgb(219, 46, 46);
   color: white;
@@ -60,7 +72,7 @@ const Button = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background-color: #2980b9;
+    background-color: #c0392b;
   }
 `;
 
@@ -68,7 +80,7 @@ const InlineForm = styled.form`
   display: flex;
   gap: 1rem;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-top: 3rem;
   flex-wrap: wrap;
 `;
 
@@ -95,9 +107,39 @@ const InlineButton = styled.button`
   cursor: pointer;
 `;
 
-const FilterContainer = styled.div`
-  margin-bottom: 2rem;
+const SubjectFilterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 `;
+
+const SubjectLabel = styled.label`
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2f483b;
+`;
+
+const StyleSelect = styled.select`
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #2f483b;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #2f483b;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover,
+  &:focus {
+    border-color: #1d3024;
+    box-shadow: 0 0 0 3px rgba(47, 72, 59, 0.2);
+    outline: none;
+  }
+`;
+
 
 const statusColors = {
   Completed: "green",
@@ -105,6 +147,66 @@ const statusColors = {
   "Not Started": "red",
 };
 
+<<<<<<< HEAD
+=======
+const StatusFilterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+`;
+
+const StatusTab = styled.button`
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.05rem;
+  font-weight: ${({ active }) => (active ? '700' : '500')};
+  color: ${({ active }) => (active ? '#2f483b' : '#7f8c8d')};
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #2f483b;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3px;
+    width: ${({ active }) => (active ? '60%' : '0')};
+    background: linear-gradient(to right, transparent, #2f483b, transparent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+`;
+const EmptyMessage = styled.p`
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #34495e;
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+`;
+
+
+
+// Main Component
+>>>>>>> f4296bc (updated status UI)
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const [assignment, setAssignment] = useState({
@@ -114,7 +216,12 @@ const Dashboard = () => {
     status: "Not Started",
   });
   const [subjectFilter, setSubjectFilter] = useState("");
+<<<<<<< HEAD
   const [uploadedFiles, setUploadedFiles] = useState({});
+=======
+  const [statusFilter, setStatusFilter] = useState("");
+
+>>>>>>> f4296bc (updated status UI)
 
   useEffect(() => {
     axios
@@ -174,8 +281,8 @@ const Dashboard = () => {
         status: newStatus,
       })
       .then(() => {
-        setAssignments((prevAssignments) =>
-          prevAssignments.map((a) =>
+        setAssignments((prev) =>
+          prev.map((a) =>
             a.id === assignmentId ? { ...a, status: newStatus } : a
           )
         );
@@ -206,6 +313,7 @@ const Dashboard = () => {
       });
   };
 
+<<<<<<< HEAD
   const handleFileUpload = (assignmentId, file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -233,32 +341,56 @@ const Dashboard = () => {
   const filteredAssignments = subjectFilter
     ? assignments.filter((a) => a.subject === subjectFilter)
     : assignments;
+=======
+  const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
+
+  const filteredAssignments = assignments.filter((a) => {
+  const subjectMatch = subjectFilter ? a.subject === subjectFilter : true;
+  const statusMatch = statusFilter ? a.status === statusFilter : true;
+  return subjectMatch && statusMatch;
+});
+
+>>>>>>> f4296bc (updated status UI)
 
   return (
     <Container>
       <Heading>Assignment Hub</Heading>
 
-      <FilterContainer>
-        <label>
-          <strong>Filter by Subject: </strong>
-          <InlineSelect
-            value={subjectFilter}
-            onChange={(e) => setSubjectFilter(e.target.value)}
+      <SubjectFilterContainer>
+  <SubjectLabel>
+    Filter by Subject:
+  </SubjectLabel>
+  <StyleSelect
+    value={subjectFilter}
+    onChange={(e) => setSubjectFilter(e.target.value)}
+  >
+    <option value="">All</option>
+    {allSubjects.map((subject, index) => (
+      <option key={index} value={subject}>
+        {subject}
+      </option>
+    ))}
+  </StyleSelect>
+</SubjectFilterContainer>
+
+
+      <StatusFilterContainer>
+        {["Not Started", "In Progress", "Completed"].map((status) => (
+          <StatusTab
+            key={status}
+            active={statusFilter === status}
+            onClick={() => setStatusFilter(statusFilter === status ? "" : status)}
           >
-            <option value="">All</option>
-            {allSubjects.map((subject, index) => (
-              <option key={index} value={subject}>
-                {subject}
-              </option>
-            ))}
-          </InlineSelect>
-        </label>
-      </FilterContainer>
+            {status}
+          </StatusTab>
+        ))}
+      </StatusFilterContainer>
 
       {filteredAssignments.length === 0 ? (
-        <p>No assignments available</p>
+        <EmptyMessage>No assignments available</EmptyMessage>
+
       ) : (
-        <div className="grid gap-4">
+        <Grid>
           {[...filteredAssignments]
             .sort((a, b) => {
               if (a.status === "Completed" && b.status !== "Completed") return 1;
@@ -279,8 +411,8 @@ const Dashboard = () => {
                   {dayjs(assignment.deadline).format("DD MMM YYYY")}
                 </Details>
                 <Details>
-                  <strong>Current Status:</strong>{" "}
-                  <select
+                  <strong>Current Status:</strong>
+                  <StyledSelect
                     value={assignment.status}
                     onChange={(e) =>
                       handleStatusChange(assignment.id, e.target.value)
@@ -289,8 +421,9 @@ const Dashboard = () => {
                     <option value="Not Started">Not Started</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
-                  </select>
+                  </StyledSelect>
                 </Details>
+<<<<<<< HEAD
 
                 {/* File Upload */}
                 <div style={{ marginTop: "1rem" }}>
@@ -323,10 +456,12 @@ const Dashboard = () => {
                   </div>
                 )}
 
+=======
+>>>>>>> f4296bc (updated status UI)
                 <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
               </AssignmentCard>
             ))}
-        </div>
+        </Grid>
       )}
 
       <InlineForm onSubmit={handleSubmit}>
@@ -338,7 +473,6 @@ const Dashboard = () => {
           onChange={handleChange}
           required
         />
-
         <InlineInput
           type="text"
           name="subject"

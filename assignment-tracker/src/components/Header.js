@@ -89,7 +89,7 @@ function Header({isAuthPage}) {
       {/* Navigation section */}
       <Nav>
         <ul>
-          <li><a href="/">Home</a></li> {/* Link to Home page */}
+          <li><a href="/dashboard">Home</a></li> {/* Link to Home page */}
           <li><a href="/add">Manage</a></li> {/* Link to Add Assignment page */}
           <li><a href="/calendar">Calendar</a></li> {/* Link to Calendar page */}
         </ul>
