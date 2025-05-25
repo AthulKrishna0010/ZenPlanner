@@ -52,6 +52,11 @@ public class AssignmentController {
         return assignmentRepository.findAll();
     }
 
+    @GetMapping("/student/{studentId}")
+    public List<Assignment> getAssignmentsByStudentId(@PathVariable String studentId) {
+    return assignmentRepository.findByStudentId(studentId);
+    }
+
     // Delete an assignment by ID
     @DeleteMapping("/{id}")
 public ResponseEntity<String> deleteById(@PathVariable String id) {
@@ -119,7 +124,9 @@ public ResponseEntity<Assignment> updateAssignment(@PathVariable String id, @Req
     existingAssignment.setTitle(updatedAssignment.getTitle());
     existingAssignment.setSubject(updatedAssignment.getSubject());
     existingAssignment.setDeadline(updatedAssignment.getDeadline());
+    existingAssignment.setStudentId(updatedAssignment.getStudentId());
     existingAssignment.setStatus(updatedAssignment.getStatus());
+    existingAssignment.setStudentName(updatedAssignment.getStudentName());
 
     Assignment savedAssignment = assignmentRepository.save(existingAssignment);
     return ResponseEntity.ok(savedAssignment);

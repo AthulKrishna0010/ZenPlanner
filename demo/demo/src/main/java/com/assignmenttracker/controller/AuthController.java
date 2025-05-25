@@ -8,19 +8,30 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
         return userService.registerUser(user);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         return userService.authenticateUser(user);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<?> deleteAllUsers() {
+        return userService.deleteAllUsers();
+    }
+    
 }

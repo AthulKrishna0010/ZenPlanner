@@ -68,3 +68,14 @@ export const LinkText = styled.p`
     text-decoration: none;
   }
 `;
+export const Label = styled.label`
+  margin-top: 10px;
+  font-weight: bold;
+`;
+
+export const Select = styled.select`
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+`;
