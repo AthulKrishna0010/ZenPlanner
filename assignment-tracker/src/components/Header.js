@@ -64,6 +64,8 @@ const Nav = styled.nav`
 
 // Functional component for the header
 function Header({isAuthPage}) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role || "student";
   if(isAuthPage){
     return (
     <HeaderContainer style={{ justifyContent: 'center' }}>
@@ -90,7 +92,8 @@ function Header({isAuthPage}) {
       <Nav>
         <ul>
           <li><a href="/dashboard">Home</a></li> {/* Link to Home page */}
-          <li><a href="/add">Manage</a></li> {/* Link to Add Assignment page */}
+          { role === "mentor" && (
+          <li><a href="/add">Manage</a></li>)} {/* Link to Add Assignment page */}
           <li><a href="/calendar">Calendar</a></li> {/* Link to Calendar page */}
         </ul>
       </Nav>

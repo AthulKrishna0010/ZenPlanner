@@ -43,13 +43,16 @@ const CopyrightText = styled.p`
 
 // Footer component definition
 const Footer = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role || "student"; // fallback if user is null
   return (
     <FooterWrapper>
       <FooterContainer>
         {/* Links for navigation within the site */}
         <FooterLinks>
           <a href="/">Home</a>
-          <a href="/add">Add Tasks</a>
+          { role=== "mentor" && (
+          <a href="/add">Add Tasks</a>)}
           <a href="/calendar">Calendar</a>
           
         </FooterLinks>

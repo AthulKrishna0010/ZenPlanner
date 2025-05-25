@@ -12,7 +12,11 @@ import {
 } from "./AuthStyles";
 
 const SignIn = () => {
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -26,15 +30,16 @@ const SignIn = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/signin", user);
+      const response = await axios.post("http://localhost:8080/api/auth/login", user);
 
-      // Assuming a 200 response means success
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
+        localStorage.setItem("user", JSON.stringify(response.data));
         navigate("/dashboard");
+
       }
     } catch (err) {
       console.error(err);
-      setError("Invalid email or password.");
+      setError("Invalid email or password. Please try again.");
     }
   };
 

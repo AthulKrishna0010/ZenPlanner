@@ -16,7 +16,9 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    role: "student", // default role
   });
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -31,9 +33,8 @@ const SignUp = () => {
 
     try {
       const response = await axios.post("http://localhost:8080/api/auth/signup", user);
-
       if (response.status === 201 || response.status === 200) {
-        navigate("/signin");
+        navigate("/login");
       }
     } catch (err) {
       console.error(err);
@@ -70,11 +71,31 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
+
+          <label style={{ marginTop: "10px", fontWeight: "bold" }}>
+            Register As:
+          </label>
+          <select
+            name="role"
+            value={user.role}
+            onChange={handleChange}
+            required
+            style={{
+              padding: "0.6rem",
+              marginTop: "0.5rem",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
+          >
+            <option value="student">Student</option>
+            <option value="mentor">Mentor</option>
+          </select>
+
           {error && <p style={{ color: "red" }}>{error}</p>}
           <Button type="submit">Sign Up</Button>
         </Form>
         <LinkText>
-          Already have an account? <a href="/signin">Sign In</a>
+          Already have an account? <a href="/login">Sign In</a>
         </LinkText>
       </Card>
     </PageWrapper>

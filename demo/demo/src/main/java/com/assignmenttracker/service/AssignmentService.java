@@ -27,6 +27,8 @@ public class AssignmentService {
     existing.setSubject(updated.getSubject());
     existing.setDeadline(updated.getDeadline());
     existing.setStatus(updated.getStatus());
+    existing.setStudentName(updated.getStudentId());
+    existing.setStudentName(updated.getStudentName());
 
     return assignmentRepository.save(existing);
 }

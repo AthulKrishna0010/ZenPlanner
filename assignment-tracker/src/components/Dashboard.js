@@ -208,12 +208,15 @@ const EmptyMessage = styled.p`
 // Main Component
 >>>>>>> f4296bc (updated status UI)
 const Dashboard = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const [assignments, setAssignments] = useState([]);
   const [assignment, setAssignment] = useState({
     title: "",
     subject: "",
     deadline: "",
     status: "Not Started",
+    studentId: user.id,           // <- newly added
+    studentName: user.name,
   });
   const [subjectFilter, setSubjectFilter] = useState("");
 <<<<<<< HEAD
@@ -221,10 +224,17 @@ const Dashboard = () => {
 =======
   const [statusFilter, setStatusFilter] = useState("");
 
+<<<<<<< HEAD
 >>>>>>> f4296bc (updated status UI)
+=======
+  const role = user?.role || "student"; // fallback if user is null
+
+>>>>>>> 330a971 (in progress of completing 2-way functionality)
 
   useEffect(() => {
+    
     axios
+<<<<<<< HEAD
       .get("http://localhost:8080/api/assignments")
       .then((response) => {
         setAssignments(response.data);
@@ -239,6 +249,13 @@ const Dashboard = () => {
             );
         });
       })
+=======
+      .get(
+        
+          "http://localhost:8080/api/assignments"
+      )
+      .then((response) => setAssignments(response.data))
+>>>>>>> 330a971 (in progress of completing 2-way functionality)
       .catch((error) => console.error("Error fetching data", error));
   }, []);
 
@@ -345,10 +362,10 @@ const Dashboard = () => {
   const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
 
   const filteredAssignments = assignments.filter((a) => {
-  const subjectMatch = subjectFilter ? a.subject === subjectFilter : true;
-  const statusMatch = statusFilter ? a.status === statusFilter : true;
-  return subjectMatch && statusMatch;
-});
+    const subjectMatch = subjectFilter ? a.subject === subjectFilter : true;
+    const statusMatch = statusFilter ? a.status === statusFilter : true;
+    return subjectMatch && statusMatch;
+  });
 
 >>>>>>> f4296bc (updated status UI)
 
@@ -357,21 +374,21 @@ const Dashboard = () => {
       <Heading>Assignment Hub</Heading>
 
       <SubjectFilterContainer>
-  <SubjectLabel>
-    Filter by Subject:
-  </SubjectLabel>
-  <StyleSelect
-    value={subjectFilter}
-    onChange={(e) => setSubjectFilter(e.target.value)}
-  >
-    <option value="">All</option>
-    {allSubjects.map((subject, index) => (
-      <option key={index} value={subject}>
-        {subject}
-      </option>
-    ))}
-  </StyleSelect>
-</SubjectFilterContainer>
+        <SubjectLabel>
+          Filter by Subject:
+        </SubjectLabel>
+        <StyleSelect
+          value={subjectFilter}
+          onChange={(e) => setSubjectFilter(e.target.value)}
+        >
+          <option value="">All</option>
+          {allSubjects.map((subject, index) => (
+            <option key={index} value={subject}>
+              {subject}
+            </option>
+          ))}
+        </StyleSelect>
+      </SubjectFilterContainer>
 
 
       <StatusFilterContainer>
@@ -402,6 +419,10 @@ const Dashboard = () => {
                 key={assignment.id}
                 statusColor={statusColors[assignment.status]}
               >
+                {role === "mentor" && (
+                  <Details><strong>Student:</strong> {assignment.studentName}</Details>
+                )}
+
                 <Title>{assignment.title}</Title>
                 <Details>
                   <strong>Subject:</strong> {assignment.subject}
@@ -423,6 +444,7 @@ const Dashboard = () => {
                     <option value="Completed">Completed</option>
                   </StyledSelect>
                 </Details>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
                 {/* File Upload */}
@@ -459,46 +481,51 @@ const Dashboard = () => {
 =======
 >>>>>>> f4296bc (updated status UI)
                 <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
+=======
+                {role === "mentor" && (
+                  <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>)}
+>>>>>>> 330a971 (in progress of completing 2-way functionality)
               </AssignmentCard>
             ))}
         </Grid>
       )}
+      {role === "mentor" && (
+        <InlineForm onSubmit={handleSubmit}>
+          <InlineInput
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={assignment.title}
+            onChange={handleChange}
+            required
+          />
+          <InlineInput
+            type="text"
+            name="subject"
+            placeholder="Subject"
+            value={assignment.subject}
+            onChange={handleChange}
+            required
+          />
+          <InlineInput
+            type="date"
+            name="deadline"
+            value={assignment.deadline}
+            onChange={handleChange}
+            required
+          />
+          <InlineSelect
+            name="status"
+            value={assignment.status}
+            onChange={handleChange}
+          >
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </InlineSelect>
 
-      <InlineForm onSubmit={handleSubmit}>
-        <InlineInput
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={assignment.title}
-          onChange={handleChange}
-          required
-        />
-        <InlineInput
-          type="text"
-          name="subject"
-          placeholder="Subject"
-          value={assignment.subject}
-          onChange={handleChange}
-          required
-        />
-        <InlineInput
-          type="date"
-          name="deadline"
-          value={assignment.deadline}
-          onChange={handleChange}
-          required
-        />
-        <InlineSelect
-          name="status"
-          value={assignment.status}
-          onChange={handleChange}
-        >
-          <option value="Not Started">Not Started</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Completed">Completed</option>
-        </InlineSelect>
-        <InlineButton type="submit">Add</InlineButton>
-      </InlineForm>
+          <InlineButton type="submit">Add</InlineButton>
+        </InlineForm>)}
     </Container>
   );
 };
