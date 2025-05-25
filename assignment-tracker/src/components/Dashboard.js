@@ -140,15 +140,6 @@ const StyleSelect = styled.select`
   }
 `;
 
-
-const statusColors = {
-  Completed: "green",
-  "In Progress": "yellow",
-  "Not Started": "red",
-};
-
-<<<<<<< HEAD
-=======
 const StatusFilterContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -185,6 +176,7 @@ const StatusTab = styled.button`
     transition: width 0.3s ease;
   }
 `;
+
 const EmptyMessage = styled.p`
   text-align: center;
   font-size: 1.2rem;
@@ -203,10 +195,13 @@ const EmptyMessage = styled.p`
   }
 `;
 
-
+const statusColors = {
+  Completed: "green",
+  "In Progress": "yellow",
+  "Not Started": "red",
+};
 
 // Main Component
->>>>>>> f4296bc (updated status UI)
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [assignments, setAssignments] = useState([]);
@@ -215,47 +210,18 @@ const Dashboard = () => {
     subject: "",
     deadline: "",
     status: "Not Started",
-    studentId: user.id,           // <- newly added
+    studentId: user.id, // <- newly added
     studentName: user.name,
   });
   const [subjectFilter, setSubjectFilter] = useState("");
-<<<<<<< HEAD
-  const [uploadedFiles, setUploadedFiles] = useState({});
-=======
   const [statusFilter, setStatusFilter] = useState("");
 
-<<<<<<< HEAD
->>>>>>> f4296bc (updated status UI)
-=======
   const role = user?.role || "student"; // fallback if user is null
 
->>>>>>> 330a971 (in progress of completing 2-way functionality)
-
   useEffect(() => {
-    
     axios
-<<<<<<< HEAD
       .get("http://localhost:8080/api/assignments")
-      .then((response) => {
-        setAssignments(response.data);
-        response.data.forEach((assignment) => {
-          axios
-            .get(`http://localhost:8080/files/${assignment.id}`)
-            .then((res) =>
-              setUploadedFiles((prev) => ({
-                ...prev,
-                [assignment.id]: res.data,
-              }))
-            );
-        });
-      })
-=======
-      .get(
-        
-          "http://localhost:8080/api/assignments"
-      )
       .then((response) => setAssignments(response.data))
->>>>>>> 330a971 (in progress of completing 2-way functionality)
       .catch((error) => console.error("Error fetching data", error));
   }, []);
 
@@ -318,11 +284,6 @@ const Dashboard = () => {
       .then(() => {
         alert("Assignment deleted!");
         setAssignments((prev) => prev.filter((a) => a.id !== id));
-        setUploadedFiles((prev) => {
-          const updated = { ...prev };
-          delete updated[id];
-          return updated;
-        });
       })
       .catch((error) => {
         console.error("Delete error:", error);
@@ -330,35 +291,6 @@ const Dashboard = () => {
       });
   };
 
-<<<<<<< HEAD
-  const handleFileUpload = (assignmentId, file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    axios
-      .post(`http://localhost:8080/upload/${assignmentId}`, formData)
-      .then(() => {
-        alert("File uploaded!");
-        axios
-          .get(`http://localhost:8080/files/${assignmentId}`)
-          .then((res) =>
-            setUploadedFiles((prev) => ({
-              ...prev,
-              [assignmentId]: res.data,
-            }))
-          );
-      })
-      .catch((err) => {
-        console.error("Upload error:", err);
-        alert("File upload failed");
-      });
-  };
-
-  const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
-  const filteredAssignments = subjectFilter
-    ? assignments.filter((a) => a.subject === subjectFilter)
-    : assignments;
-=======
   const allSubjects = Array.from(new Set(assignments.map((a) => a.subject)));
 
   const filteredAssignments = assignments.filter((a) => {
@@ -367,16 +299,12 @@ const Dashboard = () => {
     return subjectMatch && statusMatch;
   });
 
->>>>>>> f4296bc (updated status UI)
-
   return (
     <Container>
       <Heading>Assignment Hub</Heading>
 
       <SubjectFilterContainer>
-        <SubjectLabel>
-          Filter by Subject:
-        </SubjectLabel>
+        <SubjectLabel>Filter by Subject:</SubjectLabel>
         <StyleSelect
           value={subjectFilter}
           onChange={(e) => setSubjectFilter(e.target.value)}
@@ -389,7 +317,6 @@ const Dashboard = () => {
           ))}
         </StyleSelect>
       </SubjectFilterContainer>
-
 
       <StatusFilterContainer>
         {["Not Started", "In Progress", "Completed"].map((status) => (
@@ -404,112 +331,73 @@ const Dashboard = () => {
       </StatusFilterContainer>
 
       {filteredAssignments.length === 0 ? (
-        <EmptyMessage>No assignments available</EmptyMessage>
-
+        <EmptyMessage>No assignments found.</EmptyMessage>
       ) : (
         <Grid>
-          {[...filteredAssignments]
-            .sort((a, b) => {
-              if (a.status === "Completed" && b.status !== "Completed") return 1;
-              if (a.status !== "Completed" && b.status === "Completed") return -1;
-              return new Date(a.deadline) - new Date(b.deadline);
-            })
-            .map((assignment) => (
-              <AssignmentCard
-                key={assignment.id}
-                statusColor={statusColors[assignment.status]}
-              >
-                {role === "mentor" && (
-                  <Details><strong>Student:</strong> {assignment.studentName}</Details>
-                )}
-
-                <Title>{assignment.title}</Title>
-                <Details>
-                  <strong>Subject:</strong> {assignment.subject}
-                </Details>
-                <Details>
-                  <strong>Deadline:</strong>{" "}
-                  {dayjs(assignment.deadline).format("DD MMM YYYY")}
-                </Details>
-                <Details>
-                  <strong>Current Status:</strong>
-                  <StyledSelect
-                    value={assignment.status}
-                    onChange={(e) =>
-                      handleStatusChange(assignment.id, e.target.value)
-                    }
-                  >
-                    <option value="Not Started">Not Started</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </StyledSelect>
-                </Details>
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-                {/* File Upload */}
-                <div style={{ marginTop: "1rem" }}>
-                  <strong>Upload File:</strong>{" "}
-                  <input
-                    type="file"
-                    onChange={(e) =>
-                      handleFileUpload(assignment.id, e.target.files[0])
-                    }
-                  />
-                </div>
-
-                {/* File List */}
-                {uploadedFiles[assignment.id]?.length > 0 && (
-                  <div style={{ marginTop: "1rem" }}>
-                    <strong>Uploaded Files:</strong>
-                    <ul>
-                      {uploadedFiles[assignment.id].map((file, idx) => (
-                        <li key={idx}>
-                          <a
-                            href={`http://localhost:8080/download/${file}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {file}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-=======
->>>>>>> f4296bc (updated status UI)
+          {filteredAssignments.map((assignment) => (
+            <AssignmentCard
+              key={assignment.id}
+              statusColor={statusColors[assignment.status] || "gray"}
+            >
+              <Title>{assignment.title}</Title>
+              <Details>
+                Subject: <strong>{assignment.subject}</strong>
+              </Details>
+              <Details>
+                Deadline: {dayjs(assignment.deadline).format("MMMM D, YYYY")}
+              </Details>
+              <Details>
+                Status:
+                <StyledSelect
+                  value={assignment.status}
+                  onChange={(e) =>
+                    handleStatusChange(assignment.id, e.target.value)
+                  }
+                >
+                  <option value="Not Started">Not Started</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </StyledSelect>
+              </Details>
+              <Details>
+                Student: {assignment.studentName || "Unknown"}
+              </Details>
+              {(role === "mentor" || role === "admin") && (
                 <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
-=======
-                {role === "mentor" && (
-                  <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>)}
->>>>>>> 330a971 (in progress of completing 2-way functionality)
-              </AssignmentCard>
-            ))}
+              )}
+            </AssignmentCard>
+          ))}
         </Grid>
       )}
-      {role === "mentor" && (
+
+      {(role === "mentor" || role === "admin") && (
         <InlineForm onSubmit={handleSubmit}>
           <InlineInput
-            type="text"
             name="title"
-            placeholder="Title"
+            type="text"
+            placeholder="Assignment Title"
             value={assignment.title}
             onChange={handleChange}
             required
           />
-          <InlineInput
-            type="text"
+          <InlineSelect
             name="subject"
-            placeholder="Subject"
             value={assignment.subject}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="" disabled>
+              Select Subject
+            </option>
+            {allSubjects.map((subject, idx) => (
+              <option key={idx} value={subject}>
+                {subject}
+              </option>
+            ))}
+          </InlineSelect>
           <InlineInput
-            type="date"
             name="deadline"
+            type="date"
             value={assignment.deadline}
             onChange={handleChange}
             required
@@ -518,14 +406,15 @@ const Dashboard = () => {
             name="status"
             value={assignment.status}
             onChange={handleChange}
+            required
           >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
           </InlineSelect>
-
-          <InlineButton type="submit">Add</InlineButton>
-        </InlineForm>)}
+          <InlineButton type="submit">Add Assignment</InlineButton>
+        </InlineForm>
+      )}
     </Container>
   );
 };
