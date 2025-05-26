@@ -1,4 +1,4 @@
-# 📝 Mentor-Student Assignment Tracker
+# 📝 ZenPlanner
 
 A full-stack web application to help **mentors** assign and track tasks, and for **students** to view, manage, and submit assignments. Built with **React.js** (frontend), **Spring Boot** (backend), and **MongoDB** (database).
 
