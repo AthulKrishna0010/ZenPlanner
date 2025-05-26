@@ -1,12 +1,14 @@
 package com.assignmenttracker.controller;
 
 import com.assignmenttracker.model.Assignment;
+import com.assignmenttracker.model.User;
 import com.assignmenttracker.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.assignmenttracker.service.AssignmentService;  // Adjust package as needed
 import org.springframework.http.ResponseEntity;
-
+import com.assignmenttracker.service.UserService;
+import com.assignmenttracker.repository.UserRepository;
 
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -40,22 +42,12 @@ public class AssignmentController {
     @Autowired
     private AssignmentService assignmentService;
 
-    // Add a new assignment
-    @PostMapping
-    public Assignment createAssignment(@RequestBody Assignment assignment) {
-        return assignmentRepository.save(assignment);
-    }
+    @Autowired
+    private UserService userRepo;
 
-    // Get all assignments
-    @GetMapping
-    public List<Assignment> getAllAssignments() {
-        return assignmentRepository.findAll();
-    }
+    
 
-    @GetMapping("/student/{studentId}")
-    public List<Assignment> getAssignmentsByStudentId(@PathVariable String studentId) {
-    return assignmentRepository.findByStudentId(studentId);
-    }
+    
 
     // Delete an assignment by ID
     @DeleteMapping("/{id}")
@@ -68,39 +60,6 @@ public ResponseEntity<String> deleteById(@PathVariable String id) {
     }
 }
 
-@PostMapping("/upload/{assignmentId}")
-public ResponseEntity<String> uploadFile(
-        @PathVariable String assignmentId, @RequestParam("file") MultipartFile file) {
-    try {
-        String uploadDir = "uploads/" + assignmentId + "/";
-        Files.createDirectories(Paths.get(uploadDir));
-
-        String filePath = uploadDir + file.getOriginalFilename();
-        Path path = Paths.get(filePath);
-        Files.write(path, file.getBytes());
-
-        return ResponseEntity.ok(filePath);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed: " + e.getMessage());
-    }
-}
-
-@GetMapping("/files/{assignmentId}")
-public ResponseEntity<List<String>> listFiles(@PathVariable String assignmentId) {
-    try {
-        Path dir = Paths.get("uploads/" + assignmentId);
-        if (!Files.exists(dir)) return ResponseEntity.ok(Collections.emptyList());
-
-        List<String> fileNames = Files.list(dir)
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(fileNames);
-    } catch (IOException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-    }
-}
 
 
 
@@ -124,13 +83,49 @@ public ResponseEntity<Assignment> updateAssignment(@PathVariable String id, @Req
     existingAssignment.setTitle(updatedAssignment.getTitle());
     existingAssignment.setSubject(updatedAssignment.getSubject());
     existingAssignment.setDeadline(updatedAssignment.getDeadline());
-    existingAssignment.setStudentId(updatedAssignment.getStudentId());
+    
     existingAssignment.setStatus(updatedAssignment.getStatus());
-    existingAssignment.setStudentName(updatedAssignment.getStudentName());
+    
 
     Assignment savedAssignment = assignmentRepository.save(existingAssignment);
     return ResponseEntity.ok(savedAssignment);
 }
+
+@PostMapping("/duplicate")
+public ResponseEntity<List<Assignment>> createAssignment(@RequestBody Assignment assignment) {
+    List<User> students = userRepo.getAllUsers(); // Assuming this method fetches all students
+    List<Assignment> assignments = students.stream()
+        .map(student -> {
+            Assignment newAssignment = new Assignment();
+            newAssignment.setTitle(assignment.getTitle());
+            newAssignment.setSubject(assignment.getSubject());
+            newAssignment.setDeadline(assignment.getDeadline());
+            newAssignment.setStatus(assignment.getStatus());
+            newAssignment.setStudentId(student.getId()); // Assign unique studentId
+            newAssignment.setStudentName(student.getName());
+            return newAssignment;
+        })
+        .collect(Collectors.toList());
+
+    List<Assignment> savedAssignments = assignmentRepository.saveAll(assignments);
+    return ResponseEntity.ok(savedAssignments);
+}
+
+@GetMapping("/duplicate")
+public ResponseEntity<List<Assignment>> getAllDuplicatedAssignments() {
+    List<Assignment> assignments = assignmentRepository.findAll(); // Fetch all assignments
+    return ResponseEntity.ok(assignments);
+}
+
+@GetMapping("/duplicate/{id}")
+public ResponseEntity<List<Assignment>> getAssignmentsByStudentId(@PathVariable String id) {
+    List<Assignment> assignments = assignmentRepository.findByStudentId(id); // Fetch by student ID
+    if (assignments.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+    }
+    return ResponseEntity.ok(assignments);
+}
+
 
 }
 

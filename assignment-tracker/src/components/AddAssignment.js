@@ -106,7 +106,7 @@ const AddAssignment = ({ onAdd }) => {
 
   const fetchAssignments = () => {
     axios
-      .get("http://localhost:8080/api/assignments")
+      .get("http://localhost:8080/api/assignments/duplicate")
       .then((res) => setAssignments(res.data))
       .catch((err) => console.error("Fetch failed", err));
   };
@@ -119,7 +119,7 @@ const AddAssignment = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/assignments", assignment)
+      .post("http://localhost:8080/api/assignments/duplicate", assignment)
       .then((res) => {
         alert("Assignment added!");
         onAdd(res.data);

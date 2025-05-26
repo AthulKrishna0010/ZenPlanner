@@ -51,13 +51,15 @@ const AssignmentBox = styled.ul`
 `;
 
 const CalendarView = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const [value, setValue] = useState(new Date());
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
   const fetchAssignments = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/assignments"); // update port if needed
+
+      const response = await fetch(`http://localhost:8080/api/assignments/duplicate/${user.id}`); // update port if needed
       const data = await response.json();
       setAssignments(data);
     } catch (error) {

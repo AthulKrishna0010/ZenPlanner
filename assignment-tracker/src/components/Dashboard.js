@@ -212,6 +212,7 @@ const Dashboard = () => {
     status: "Not Started",
     studentId: user.id, // <- newly added
     studentName: user.name,
+    
   });
   const [subjectFilter, setSubjectFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -219,11 +220,21 @@ const Dashboard = () => {
   const role = user?.role || "student"; // fallback if user is null
 
   useEffect(() => {
+  if (role === "mentor" || role === "admin") {
+    // Fetch all assignments using /duplicate endpoint
     axios
-      .get("http://localhost:8080/api/assignments")
+      .get("http://localhost:8080/api/assignments/duplicate")
       .then((response) => setAssignments(response.data))
-      .catch((error) => console.error("Error fetching data", error));
-  }, []);
+      .catch((error) => console.error("Error fetching assignments", error));
+  } else {
+    // Fetch assignments only for this student
+    axios
+      .get(`http://localhost:8080/api/assignments/duplicate/${user.id}`)
+      .then((response) => setAssignments(response.data))
+      .catch((error) => console.error("Error fetching student assignments", error));
+  }
+}, [role, user.id]);
+
 
   const handleAddAssignment = (newAssignment) => {
     setAssignments((prev) => [...prev, newAssignment]);
@@ -237,7 +248,7 @@ const Dashboard = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/assignments", assignment)
+      .post("http://localhost:8080/api/assignments/duplicate", assignment)
       .then((response) => {
         alert("Assignment added!");
         handleAddAssignment(response.data);
@@ -296,7 +307,10 @@ const Dashboard = () => {
   const filteredAssignments = assignments.filter((a) => {
     const subjectMatch = subjectFilter ? a.subject === subjectFilter : true;
     const statusMatch = statusFilter ? a.status === statusFilter : true;
-    return subjectMatch && statusMatch;
+    
+    const hideOwnAssignments = !(user.role === "mentor" && a.studentId === user.id);
+
+    return subjectMatch && statusMatch && hideOwnAssignments;
   });
 
   return (
@@ -339,6 +353,8 @@ const Dashboard = () => {
               key={assignment.id}
               statusColor={statusColors[assignment.status] || "gray"}
             >
+              {role === "mentor" && (
+              <Title>Student: {assignment.studentName || "Unknown"}</Title>)}
               <Title>{assignment.title}</Title>
               <Details>
                 Subject: <strong>{assignment.subject}</strong>
@@ -359,9 +375,7 @@ const Dashboard = () => {
                   <option value="Completed">Completed</option>
                 </StyledSelect>
               </Details>
-              <Details>
-                Student: {assignment.studentName || "Unknown"}
-              </Details>
+              
               {(role === "mentor" || role === "admin") && (
                 <Button onClick={() => handleDelete(assignment.id)}>Delete</Button>
               )}
@@ -380,21 +394,15 @@ const Dashboard = () => {
             onChange={handleChange}
             required
           />
-          <InlineSelect
-            name="subject"
-            value={assignment.subject}
-            onChange={handleChange}
-            required
-          >
-            <option value="" disabled>
-              Select Subject
-            </option>
-            {allSubjects.map((subject, idx) => (
-              <option key={idx} value={subject}>
-                {subject}
-              </option>
-            ))}
-          </InlineSelect>
+         <InlineInput
+  name="subject"
+  type="text"
+  placeholder="Enter Subject"
+  value={assignment.subject}
+  onChange={handleChange}
+  required
+/>
+
           <InlineInput
             name="deadline"
             type="date"
