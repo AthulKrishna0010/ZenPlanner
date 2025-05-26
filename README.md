@@ -15,9 +15,6 @@ A full-stack web application to help **mentors** assign and track tasks, and for
 - Update status (e.g., In Progress, Completed).
 - Upload files for submitted assignments.
 
-### 📂 File Uploads
-- Upload and view submitted files for each assignment.
-- Files are stored locally under `uploads/{assignmentId}/`.
 
 ---
 
