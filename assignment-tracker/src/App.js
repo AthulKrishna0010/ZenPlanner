@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, BrowserRouter } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AddAssignment from "./components/AddAssignment";
 import CalendarView from "./components/CalendarView";
@@ -20,6 +20,7 @@ function AppContent() {
   return (
     <>
       <Header isAuthPage={isAuthPage} />
+      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<SignIn />} />
@@ -37,6 +38,7 @@ function AppContent() {
 
         <Route path="/calendar" element={<CalendarView />} />
       </Routes>
+      </BrowserRouter>
       <Footer />
     </>
   );
