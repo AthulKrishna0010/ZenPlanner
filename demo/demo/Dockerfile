@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Copy all files to the container
 COPY . .
+COPY .env .env
+
 
 # Build the application (skip tests to speed up)
 RUN mvn clean package -DskipTests
