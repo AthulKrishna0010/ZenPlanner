@@ -1,24 +1,20 @@
-# Use an official Maven image to build the app
+# ---- Build Stage ----
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Set working directory inside the container
 WORKDIR /app
-
-# Copy all files to the container
 COPY . .
 COPY .env .env
-
-# Build the application (skip tests to speed up)
 RUN mvn clean package -DskipTests
 
-# Use a smaller JDK image to run the app
+# ---- Run Stage ----
 FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy the jar file from the previous build stage
+# Copy built jar
 COPY --from=build /app/target/*.jar app.jar
 
-# Run the jar file
+# ✅ Copy the .env file into the final image
+COPY --from=build /app/.env .env
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
