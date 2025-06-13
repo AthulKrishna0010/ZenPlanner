@@ -62,6 +62,8 @@ const Nav = styled.nav`
   }
 `;
 
+
+
 // Functional component for the header
 function Header({isAuthPage}) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -95,7 +97,9 @@ function Header({isAuthPage}) {
           { role === "mentor" && (
           <li><a href="/add">Manage</a></li>)} {/* Link to Add Assignment page */}
           <li><a href="/calendar">Calendar</a></li> {/* Link to Calendar page */}
+          
         </ul>
+        
       </Nav>
     </HeaderContainer>
   );

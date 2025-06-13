@@ -1,16 +1,17 @@
 package com.assignmenttracker;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 @SpringBootApplication
 public class AssignmentTrackerApplication {
 
     public static void main(String[] args) {
+        // Load .env
+        Dotenv dotenv = Dotenv.load();
+        System.setProperty("MONGODB_URI", dotenv.get("MONGODB_URI"));
+
         SpringApplication.run(AssignmentTrackerApplication.class, args);
     }
-
 }

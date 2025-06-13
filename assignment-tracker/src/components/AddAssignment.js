@@ -133,7 +133,7 @@ const AddAssignment = ({ onAdd }) => {
       })
       .catch((err) => {
         console.error("Submit failed", err);
-        alert("Failed to add assignment.");
+        // alert("Failed to add assignment.");
       });
   };
 

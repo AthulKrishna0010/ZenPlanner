@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import styled from "styled-components";
+// import { useEffect, useState } from "react";
+// import dayjs from "dayjs";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // Styled Components
 const Container = styled.div`
@@ -235,6 +240,34 @@ const Dashboard = () => {
   }
 }, [role, user.id]);
 
+useEffect(() => {
+  if (role === "student") {
+    const today = dayjs();
+    const upcomingAssignments = assignments.filter((a) => {
+      const dueDate = dayjs(a.deadline);
+      const daysLeft = dueDate.diff(today, "day");
+      return daysLeft >= 0 && daysLeft <= 3;
+    });
+
+    const shownSubjects = new Set();
+
+    upcomingAssignments.forEach((a) => {
+      if (!shownSubjects.has(a.subject)) {
+        const dueDate = dayjs(a.deadline);
+        const daysLeft = dueDate.diff(today, "day");
+        toast.info(
+          `Your assignment for ${a.subject} is due in ${daysLeft} day(s).`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            closeOnClick: true,
+          }
+        );
+        shownSubjects.add(a.subject);
+      }
+    });
+  }
+}, [assignments, role]);
 
   const handleAddAssignment = (newAssignment) => {
     setAssignments((prev) => [...prev, newAssignment]);
@@ -423,6 +456,8 @@ const Dashboard = () => {
           <InlineButton type="submit">Add Assignment</InlineButton>
         </InlineForm>
       )}
+      <ToastContainer />
+
     </Container>
   );
 };
