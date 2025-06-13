@@ -4,12 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-<<<<<<< HEAD
-  
 
-
-=======
->>>>>>> 0da58e7a2afce40e400f113dc5cb20f1a7da2b89
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
