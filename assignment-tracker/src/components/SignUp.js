@@ -32,7 +32,7 @@ const SignUp = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/signup", user);
+      const response = await axios.post("https://zenplanner-de8a.onrender.com/api/auth/signup", user);
       if (response.status === 201 || response.status === 200) {
         navigate("/login");
       }

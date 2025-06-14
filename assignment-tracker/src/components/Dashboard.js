@@ -228,13 +228,13 @@ const Dashboard = () => {
   if (role === "mentor" || role === "admin") {
     // Fetch all assignments using /duplicate endpoint
     axios
-      .get("http://localhost:8080/api/assignments/duplicate")
+      .get("https://zenplanner-de8a.onrender.com/api/assignments/duplicate")
       .then((response) => setAssignments(response.data))
       .catch((error) => console.error("Error fetching assignments", error));
   } else {
     // Fetch assignments only for this student
     axios
-      .get(`http://localhost:8080/api/assignments/duplicate/${user.id}`)
+      .get(`https://zenplanner-de8a.onrender.com/api/assignments/duplicate/${user.id}`)
       .then((response) => setAssignments(response.data))
       .catch((error) => console.error("Error fetching student assignments", error));
   }
@@ -281,7 +281,7 @@ useEffect(() => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/assignments/duplicate", assignment)
+      .post("https://zenplanner-de8a.onrender.com/api/assignments/duplicate", assignment)
       .then((response) => {
         alert("Assignment added!");
         handleAddAssignment(response.data);
@@ -303,7 +303,7 @@ useEffect(() => {
     if (!currentAssignment) return;
 
     axios
-      .put(`http://localhost:8080/api/assignments/${assignmentId}`, {
+      .put(`https://zenplanner-de8a.onrender.com/api/assignments/${assignmentId}`, {
         ...currentAssignment,
         status: newStatus,
       })
@@ -324,7 +324,7 @@ useEffect(() => {
     if (!window.confirm("Are you sure you want to delete this assignment?")) return;
 
     axios
-      .delete(`http://localhost:8080/api/assignments/${id}`)
+      .delete(`https://zenplanner-de8a.onrender.com/api/assignments/${id}`)
       .then(() => {
         alert("Assignment deleted!");
         setAssignments((prev) => prev.filter((a) => a.id !== id));

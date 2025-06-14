@@ -30,7 +30,7 @@ const SignIn = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", user);
+      const response = await axios.post("https://zenplanner-de8a.onrender.com/api/auth/login", user);
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("user", JSON.stringify(response.data));

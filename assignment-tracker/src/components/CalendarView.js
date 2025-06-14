@@ -59,7 +59,7 @@ const CalendarView = () => {
   const fetchAssignments = async () => {
     try {
 
-      const response = await fetch(`http://localhost:8080/api/assignments/duplicate/${user.id}`); // update port if needed
+      const response = await fetch(`https://zenplanner-de8a.onrender.com/api/assignments/duplicate/${user.id}`); // update port if needed
       const data = await response.json();
       setAssignments(data);
     } catch (error) {

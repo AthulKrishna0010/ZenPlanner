@@ -106,7 +106,7 @@ const AddAssignment = ({ onAdd }) => {
 
   const fetchAssignments = () => {
     axios
-      .get("http://localhost:8080/api/assignments/duplicate")
+      .get("https://zenplanner-de8a.onrender.com/api/assignments/duplicate")
       .then((res) => setAssignments(res.data))
       .catch((err) => console.error("Fetch failed", err));
   };
@@ -119,7 +119,7 @@ const AddAssignment = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/assignments/duplicate", assignment)
+      .post("https://zenplanner-de8a.onrender.com/api/assignments/duplicate", assignment)
       .then((res) => {
         alert("Assignment added!");
         onAdd(res.data);
@@ -142,7 +142,7 @@ const handleDelete = () => {
   if (!window.confirm("Are you sure you want to delete this assignment?")) return;
 
   axios
-    .delete(`http://localhost:8080/api/assignments/${selectedId}`)
+    .delete(`https://zenplanner-de8a.onrender.com/api/assignments/${selectedId}`)
     .then(() => {
       alert("Assignment deleted!");
       fetchAssignments(); // Refresh list
@@ -235,7 +235,7 @@ const handleDelete = () => {
     e.preventDefault();
     if (!selectedId) return;
 
-    axios.put(`http://localhost:8080/api/assignments/${selectedId}`, {
+    axios.put(`https://zenplanner-de8a.onrender.com/api/assignments/${selectedId}`, {
       title: assignment.title,
       subject: assignment.subject,
       deadline: assignment.deadline,
