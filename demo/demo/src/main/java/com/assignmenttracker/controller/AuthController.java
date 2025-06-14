@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://zenplanner-1.onrender.com", allowCredentials = "true")
+
 public class AuthController {
 
     @Autowired

@@ -33,7 +33,8 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/assignments")
-@CrossOrigin(origins = "*") // allows frontend like React to access this API
+@CrossOrigin(origins = "https://zenplanner-1.onrender.com", allowCredentials = "true")
+
 public class AssignmentController {
 
     @Autowired
