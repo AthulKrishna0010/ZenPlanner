@@ -2,7 +2,7 @@
   "name": "assignment-tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://AthulKrishna0010.github.io/ZenPlanner",
+  "homepage": "https://athulkrishna0010.github.io/ZenPlanner/",
 
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
