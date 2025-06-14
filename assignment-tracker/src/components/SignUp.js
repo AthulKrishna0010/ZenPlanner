@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import {
   PageWrapper,
   Card,
@@ -95,7 +96,7 @@ const SignUp = () => {
           <Button type="submit">Sign Up</Button>
         </Form>
         <LinkText>
-          Already have an account? <a href="/login">Sign In</a>
+          Already have an account? <Link to="/login">Sign In</Link>
         </LinkText>
       </Card>
     </PageWrapper>

@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from '../media/logo-2.png';
+import { Link } from 'react-router-dom';
+
 
 // Styled container for the header section
 const HeaderContainer = styled.header`
@@ -65,41 +67,43 @@ const Nav = styled.nav`
 
 
 // Functional component for the header
-function Header({isAuthPage}) {
+function Header({ isAuthPage }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const role = user?.role || "student";
-  if(isAuthPage){
+  if (isAuthPage) {
     return (
-    <HeaderContainer style={{ justifyContent: 'center' }}>
-      {/* Logo section with image and text */}
-      <Logo>
-      
-        <LogoImage src={logo} alt="ZenPlanner Logo" />    
-        <LogoText>ZenPlanner</LogoText>
-      </Logo>
-      
-      
-    </HeaderContainer>
-  );
+      <HeaderContainer style={{ justifyContent: 'center' }}>
+        {/* Logo section with image and text */}
+        <Logo>
+
+          <LogoImage src={logo} alt="ZenPlanner Logo" />
+          <LogoText>ZenPlanner</LogoText>
+        </Logo>
+
+
+      </HeaderContainer>
+    );
   }
   return (
     <HeaderContainer>
       {/* Logo section with image and text */}
       <Logo>
-      
-        <LogoImage src={logo} alt="ZenPlanner Logo" />    
+
+        <LogoImage src={logo} alt="ZenPlanner Logo" />
         <LogoText>ZenPlanner</LogoText>
       </Logo>
       {/* Navigation section */}
       <Nav>
         <ul>
-          <li><a href="/dashboard">Home</a></li> {/* Link to Home page */}
-          { role === "mentor" && (
-          <li><a href="/add">Manage</a></li>)} {/* Link to Add Assignment page */}
-          <li><a href="/calendar">Calendar</a></li> {/* Link to Calendar page */}
-          
+          <li><Link to="/dashboard">Home</Link></li>
+          {role === "mentor" && (
+            <li><Link to="/add">Manage</Link></li>
+          )}
+          <li><Link to="/calendar">Calendar</Link></li>
+
+
         </ul>
-        
+
       </Nav>
     </HeaderContainer>
   );
