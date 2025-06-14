@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import { Link } from "react-router-dom";
 import {
   PageWrapper,
@@ -33,7 +33,7 @@ const SignUp = () => {
     setError("");
 
     try {
-      const response = await axios.post("https://zenplanner-de8a.onrender.com/api/auth/signup", user);
+      const response = await api.post("https://zenplanner-de8a.onrender.com/api/auth/signup", user);
       if (response.status === 201 || response.status === 200) {
         navigate("/login");
       }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import styled from "styled-components";
 
 // Wrapper
@@ -105,7 +105,7 @@ const AddAssignment = ({ onAdd }) => {
   }, []);
 
   const fetchAssignments = () => {
-    axios
+    api
       .get("https://zenplanner-de8a.onrender.com/api/assignments/duplicate")
       .then((res) => setAssignments(res.data))
       .catch((err) => console.error("Fetch failed", err));
@@ -118,7 +118,7 @@ const AddAssignment = ({ onAdd }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
+    api
       .post("https://zenplanner-de8a.onrender.com/api/assignments/duplicate", assignment)
       .then((res) => {
         alert("Assignment added!");
@@ -141,7 +141,7 @@ const handleDelete = () => {
   if (!selectedId) return;
   if (!window.confirm("Are you sure you want to delete this assignment?")) return;
 
-  axios
+  api
     .delete(`https://zenplanner-de8a.onrender.com/api/assignments/${selectedId}`)
     .then(() => {
       alert("Assignment deleted!");
@@ -235,7 +235,7 @@ const handleDelete = () => {
     e.preventDefault();
     if (!selectedId) return;
 
-    axios.put(`https://zenplanner-de8a.onrender.com/api/assignments/${selectedId}`, {
+    api.put(`https://zenplanner-de8a.onrender.com/api/assignments/${selectedId}`, {
       title: assignment.title,
       subject: assignment.subject,
       deadline: assignment.deadline,

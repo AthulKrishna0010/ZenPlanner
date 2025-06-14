@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import dayjs from "dayjs";
 import styled from "styled-components";
 // import { useEffect, useState } from "react";
@@ -227,13 +227,13 @@ const Dashboard = () => {
   useEffect(() => {
   if (role === "mentor" || role === "admin") {
     // Fetch all assignments using /duplicate endpoint
-    axios
+    api
       .get("https://zenplanner-de8a.onrender.com/api/assignments/duplicate")
       .then((response) => setAssignments(response.data))
       .catch((error) => console.error("Error fetching assignments", error));
   } else {
     // Fetch assignments only for this student
-    axios
+    api
       .get(`https://zenplanner-de8a.onrender.com/api/assignments/duplicate/${user.id}`)
       .then((response) => setAssignments(response.data))
       .catch((error) => console.error("Error fetching student assignments", error));
@@ -280,7 +280,7 @@ useEffect(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
+    api
       .post("https://zenplanner-de8a.onrender.com/api/assignments/duplicate", assignment)
       .then((response) => {
         alert("Assignment added!");
@@ -302,7 +302,7 @@ useEffect(() => {
     const currentAssignment = assignments.find((a) => a.id === assignmentId);
     if (!currentAssignment) return;
 
-    axios
+    api
       .put(`https://zenplanner-de8a.onrender.com/api/assignments/${assignmentId}`, {
         ...currentAssignment,
         status: newStatus,
@@ -323,7 +323,7 @@ useEffect(() => {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this assignment?")) return;
 
-    axios
+    api
       .delete(`https://zenplanner-de8a.onrender.com/api/assignments/${id}`)
       .then(() => {
         alert("Assignment deleted!");
