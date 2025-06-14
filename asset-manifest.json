@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/ZenPlanner/static/css/main.588c8b59.css",
+    "main.js": "/ZenPlanner/static/js/main.7b2744fd.js",
+    "static/js/453.3c010073.chunk.js": "/ZenPlanner/static/js/453.3c010073.chunk.js",
+    "static/media/logo-2.png": "/ZenPlanner/static/media/logo-2.95c220b73755768564fe.png",
+    "index.html": "/ZenPlanner/index.html",
+    "main.588c8b59.css.map": "/ZenPlanner/static/css/main.588c8b59.css.map",
+    "main.7b2744fd.js.map": "/ZenPlanner/static/js/main.7b2744fd.js.map",
+    "453.3c010073.chunk.js.map": "/ZenPlanner/static/js/453.3c010073.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.588c8b59.css",
+    "static/js/main.7b2744fd.js"
+  ]
+}
